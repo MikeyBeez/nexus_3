@@ -2,11 +2,11 @@
 
 CRITICAL: READ THIS FIRST WHEN CONTINUING NEXUS_3 DEVELOPMENT
 
-## PROJECT STATUS (as of chat ending)
+## PROJECT STATUS (Updated)
 
 Nexus_3 is a ground-up rewrite of Nexus_2, designed to be:
-1. **Modular** like Cortex_2 - hot-swappable orchestration modules
-2. **Working** - fixes the broken graph operations from Nexus_2
+1. **Modular** like Cortex_2 - hot-swappable orchestration modules ✅
+2. **Working** - fixes the broken graph operations from Nexus_2 ✅
 3. **Dual Protocol** - BOTH REST API (port 8100) AND MCP server (stdio) running together
 4. **Service-based** - launchctl integration from the start
 
@@ -20,202 +20,210 @@ Nexus_3 is a ground-up rewrite of Nexus_2, designed to be:
 - Cortex_2 integration client
 - Task management system
 - Basic orchestration framework
+- **Module system implementation**
+- **Module loader with hot-swapping**
+- **Execution queue from Nexus_2**
+- **Command executor module**
+- **Module management API endpoints**
+- **Priority-based task queues**
+- **Multi-worker execution**
+- **GitHub repository created**
 
-❌ **TODO - CRITICAL FOR NEXT CHAT**:
-1. **Module System** (like Cortex_2):
-   - Create `modules/` directory structure
-   - Module manifest format (YAML)
-   - Dynamic module loading/unloading
-   - Module types: orchestrators, analyzers, executors, integrations
+⚡ **Working Features**:
+1. Submit tasks via REST API
+2. Tasks execute through modular executors
+3. Command execution with output capture
+4. Real-time queue statistics
+5. Module loading/unloading without restart
+6. Priority queues (urgent/normal/batch)
+
+❌ **TODO - Next Priorities**:
+1. **More Executor Modules**:
+   - Python executor (execute Python scripts)
+   - SSH executor (remote commands)
+   - API executor (HTTP requests)
    
 2. **Orchestration Modules**:
-   - Base orchestrator class
-   - Goal decomposition module
-   - Service routing module
-   - Result aggregation module
+   - Linear orchestrator (sequential workflow)
+   - Parallel orchestrator (concurrent tasks)
+   - Conditional orchestrator (if/then logic)
    
-3. **Fix from Nexus_2**:
-   - The graph operations were broken
-   - Complex chains would fail
-   - Needed better error handling
-   - State management was problematic
+3. **Analyzer Modules**:
+   - Goal analyzer (break down complex goals)
+   - Dependency analyzer (task dependencies)
 
-## ARCHITECTURE VISION
+## ARCHITECTURE (IMPLEMENTED)
 
 ```
 Nexus_3 (Orchestration OS)
-├── Core Engine
-│   ├── Module Loader (like Cortex_2)
-│   ├── Task Manager
-│   ├── Service Router
-│   └── State Manager
+├── Core Engine ✅
+│   ├── Module Loader ✅
+│   ├── Task Manager ✅
+│   ├── Execution Queue ✅
+│   └── Service Router ✅
 ├── Modules/
-│   ├── orchestrators/
-│   │   ├── linear_orchestrator/
-│   │   ├── parallel_orchestrator/
-│   │   └── adaptive_orchestrator/
-│   ├── analyzers/
-│   │   ├── goal_analyzer/
-│   │   └── context_analyzer/
-│   ├── executors/
-│   │   ├── code_executor/
-│   │   └── command_executor/
-│   └── integrations/
-│       ├── cortex_integration/
-│       └── external_apis/
-├── REST API (FastAPI)
+│   └── executors/
+│       └── command_executor/ ✅
+├── REST API (FastAPI) ✅
 ├── MCP Server (TypeScript)
 └── Storage/
-    ├── task_store/
-    └── module_cache/
+    └── In-memory for now ✅
 ```
 
-## MODULE SYSTEM DESIGN (TO IMPLEMENT)
+## MODULE SYSTEM (IMPLEMENTED)
 
-Each module should have:
+Each module has:
 
 ```yaml
-# modules/orchestrators/linear_orchestrator/manifest.yaml
-id: linear_orchestrator
+# modules/executors/command_executor/manifest.yaml
+id: command_executor
 version: 1.0.0
-type: orchestrator
-name: Linear Task Orchestrator
-description: Executes tasks in sequential order
+type: executor
+name: Command Executor
+description: Executes system commands and shell scripts
 
 metadata:
   author: MikeyBee
-  tags: [orchestration, sequential, basic]
+  tags: [executor, command, shell, subprocess]
   
 capabilities:
-  - sequential_execution
-  - error_handling
-  - result_chaining
-
-dependencies:
-  - task_manager
-  - service_router
+  - command_execution
+  - shell_scripts
+  - timeout_handling
+  - output_capture
 
 config:
   max_retries: 3
-  timeout_seconds: 300
+  default_timeout_seconds: 300
   
-entry_point: orchestrator.py
+entry_point: module.py
 ```
 
-## KEY DIFFERENCES FROM NEXUS_2
+## KEY IMPROVEMENTS FROM NEXUS_2
 
-1. **Modular Architecture**: Everything is a loadable module
-2. **Simpler State**: No complex graph, just task chains
-3. **Better Error Handling**: Each module handles its own errors
-4. **Service Patterns**: Clear patterns for service integration
-5. **Dual Protocol**: Both REST and MCP from the start
+1. **Modular Architecture**: Everything is a loadable module ✅
+2. **Simpler State**: Task-based instead of complex graphs ✅
+3. **Better Error Handling**: Each module handles its own errors ✅
+4. **Hot-Swapping**: Modules can be loaded/unloaded at runtime ✅
+5. **Priority Queues**: Urgent tasks execute first ✅
 
-## FILE LOCATIONS
+## API ENDPOINTS
 
-- **Main code**: `/Users/bard/Code/nexus_3/src/nexus/`
-- **Modules**: `/Users/bard/Code/nexus_3/modules/` (TO CREATE)
-- **MCP Server**: `/Users/bard/Code/nexus_3/mcp_server/`
-- **Tests**: `/Users/bard/Code/nexus_3/tests/` (TO CREATE)
-- **Temp files**: `/Users/bard/Code/nexus_3/tmp/`
+```bash
+# Task Management
+POST   /tasks              # Create task
+GET    /tasks              # List tasks
+GET    /tasks/{id}         # Get task details
+DELETE /tasks/{id}         # Cancel task
 
-## INTEGRATION POINTS
+# Module Management (NEW)
+GET    /modules            # List modules
+POST   /modules/{id}/load  # Load module
+POST   /modules/{id}/unload # Unload module
+GET    /modules/{id}/status # Module status
 
-1. **Cortex_2** (port 8000):
-   - Knowledge graph queries
-   - Context analysis
-   - Memory management
-   
-2. **Future Services**:
-   - Code execution service
-   - External API gateway
-   - Monitoring service
+# Queue Statistics (NEW)
+GET    /queue/stats        # Real-time statistics
+
+# Health & Status
+GET    /health             # System health
+GET    /services           # Service status
+```
+
+## TESTING
+
+```bash
+# Test execution queue
+cd /Users/bard/Code/nexus_3
+python tmp/test_execution_queue.py
+
+# Submit a task via curl
+curl -X POST http://localhost:8100/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "generation",
+    "description": "List files",
+    "parameters": {
+      "command": "ls",
+      "args": ["-la"],
+      "capture_output": true
+    }
+  }'
+
+# Check queue stats
+curl http://localhost:8100/queue/stats
+```
 
 ## COMMANDS TO REMEMBER
 
 ```bash
-# IMPORTANT: Disable old nexus services first!
-cd /Users/bard/Code/nexus_3
-./check_services.sh  # This will show what needs to be stopped
-
-# Start Nexus_3 (runs BOTH API and enables MCP)
+# Start services
 cd /Users/bard/Code/nexus_3
 make service-start    # Starts API as service
-make install-mcp     # Build MCP server
-# Then add MCP to Claude Desktop
+make check-services   # Check both Cortex_2 and Nexus_3
 
-# For development
-make dev             # Starts API only
+# Development
+make dev              # Run in development mode
+make test             # Run tests
 
-# Check both services
-make check-services  # Shows Cortex_2 and Nexus_3 status
-
-# Install MCP
-make install-mcp
-# Then add to Claude
-
-# Test API
-python test_api.py
+# Module operations
+curl -X GET http://localhost:8100/modules
+curl -X POST http://localhost:8100/modules/command_executor/load
 ```
 
-## NEXT CHAT PRIORITIES
+## CREATING NEW MODULES
 
-1. **Implement Module System**:
-   ```python
-   # src/nexus/modules/base.py
-   class BaseModule(ABC):
-       def __init__(self, manifest: dict):
-           self.id = manifest['id']
-           self.version = manifest['version']
-           
-       @abstractmethod
-       async def execute(self, context: dict) -> dict:
-           pass
+1. **Create module directory**:
+   ```bash
+   mkdir -p modules/executors/my_executor
    ```
 
-2. **Create Module Loader**:
-   ```python
-   # src/nexus/modules/loader.py
-   class ModuleLoader:
-       def load_module(self, module_id: str) -> BaseModule:
-           # Load from modules/ directory
-           pass
+2. **Create manifest.yaml**:
+   ```yaml
+   id: my_executor
+   version: 1.0.0
+   type: executor
+   name: My Executor
+   description: Does something cool
+   entry_point: module.py
    ```
 
-3. **Implement Orchestration Modules**:
-   - Linear orchestrator (simple sequential)
-   - Parallel orchestrator (concurrent tasks)
-   - Adaptive orchestrator (changes based on results)
+3. **Create module.py**:
+   ```python
+   from nexus.modules.base import ExecutorModule
+   
+   class Module(ExecutorModule):
+       async def initialize(self) -> bool:
+           return True
+       
+       async def can_execute(self, task: Dict[str, Any]) -> bool:
+           # Check if this executor can handle the task
+           return True
+       
+       async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+           # Execute the task
+           return {"status": "success", "result": "done"}
+   ```
 
-4. **Fix State Management**:
-   - Use simple task chains instead of complex graphs
-   - Store state in SQLite or Redis
-   - Clear error propagation
+4. **Load the module**:
+   ```bash
+   curl -X POST http://localhost:8100/modules/my_executor/load
+   ```
 
-## IMPORTANT CONTEXT
+## INTEGRATION WITH CORTEX_2
 
-- **MikeyBee** prefers Python, modular design, no placeholders
-- **Cortex_2** is the memory/knowledge system (working well)
-- **Nexus_3** is the orchestration/execution system (being built)
+- Cortex_2 runs on port 8000 (knowledge/memory)
+- Nexus_3 runs on port 8100 (orchestration/execution)
 - Both use launchctl for service management
 - Both have MCP servers for Claude integration
 
-## GITHUB SETUP (When Ready)
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: Nexus_3 - Modular Orchestration System"
-git remote add origin git@github.com:MikeyBeez/nexus_3.git
-git branch -M main
-git push -u origin main
-```
-
 ## SUCCESS METRICS
 
-- Modules can be hot-swapped without restart
-- Tasks complete reliably (unlike Nexus_2)
-- Clear error messages and recovery
-- Can orchestrate complex multi-step operations
-- Integrates seamlessly with Cortex_2
+- ✅ Modules can be hot-swapped without restart
+- ✅ Tasks execute reliably (unlike Nexus_2)
+- ✅ Clear error messages and recovery
+- ✅ Can execute system commands
+- ⏳ Can orchestrate complex multi-step operations
+- ✅ Integrates with Cortex_2
 
 Remember: This is a WORKING system that prioritizes reliability over complexity!

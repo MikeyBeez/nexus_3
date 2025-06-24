@@ -21,6 +21,7 @@ class ServiceType(str, Enum):
     CORTEX = "cortex"
     LOCAL = "local"
     EXTERNAL = "external"
+    MODULE = "module"
 
 # Request Models
 class TaskCreateRequest(BaseModel):
@@ -49,6 +50,23 @@ class TaskInfo(BaseModel):
     completed_at: Optional[datetime] = None
     result: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for module execution"""
+        return {
+            "id": self.id,
+            "type": self.type.value,
+            "status": self.status.value,
+            "description": self.description,
+            "parameters": self.parameters,
+            "priority": self.priority,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "started_at": self.started_at.isoformat() if self.started_at else None,
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "result": self.result,
+            "error": self.error
+        }
 
 class TaskCreateResponse(BaseModel):
     id: str
