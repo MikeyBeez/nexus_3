@@ -27,7 +27,11 @@ logger = logging.getLogger(__name__)
 # Global instances
 task_manager = TaskManager()
 cortex_client = CortexClient(settings.cortex_api_url)
-module_loader = ModuleLoader(os.path.join(os.path.dirname(__file__), '..', '..', 'modules'))
+# Get the project root directory (nexus_3)
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+modules_path = os.path.join(project_root, 'modules')
+logger.info(f"Loading modules from: {modules_path}")
+module_loader = ModuleLoader(modules_path)
 execution_queue = ExecutionQueue(module_loader, num_workers=3)
 
 @asynccontextmanager
@@ -39,8 +43,8 @@ async def lifespan(app: FastAPI):
     # Start execution queue
     await execution_queue.start()
     
-    # Start background services
-    asyncio.create_task(task_manager.process_tasks())
+    # Don't start the mock task processor - let execution queue handle it
+    # asyncio.create_task(task_manager.process_tasks())
     
     yield
     
