@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mikeybee.nexus3</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/bard/Code/nexus_3/launch_api.sh</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/bard/Code/nexus_3</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/bard/Code/nexus_3/src</string>
+        <key>NEXUS_API_PORT</key>
+        <string>8100</string>
+        <key>NEXUS_CORTEX_API_URL</key>
+        <string>http://localhost:8000</string>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/bard/Code/nexus_3/logs/nexus.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/bard/Code/nexus_3/logs/nexus-error.log</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+</dict>
+</plist>
