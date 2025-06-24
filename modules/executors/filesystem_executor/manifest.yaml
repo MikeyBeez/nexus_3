@@ -1,0 +1,28 @@
+id: filesystem_executor
+version: 1.0.0
+type: executor
+name: Filesystem Executor
+description: Performs filesystem operations like list, read, write, and search
+
+metadata:
+  author: MikeyBee
+  tags: [executor, filesystem, files, directories]
+  
+capabilities:
+  - list_directory
+  - read_file
+  - write_file
+  - create_directory
+  - search_files
+  - file_info
+
+dependencies: []
+
+config:
+  allowed_paths:
+    - /Users/bard/Code
+    - /Users/bard/Desktop
+    - /tmp
+  max_file_size: 10485760  # 10MB
+  
+entry_point: executor.py

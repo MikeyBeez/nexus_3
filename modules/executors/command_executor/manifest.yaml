@@ -1,0 +1,27 @@
+id: command_executor
+version: 1.0.0
+type: executor
+name: Command Executor
+description: Executes system commands and shell scripts
+
+metadata:
+  author: MikeyBee
+  tags: [executor, command, shell, subprocess]
+  
+capabilities:
+  - command_execution
+  - shell_scripts
+  - timeout_handling
+  - output_capture
+  - error_handling
+
+dependencies:
+  - task_manager
+
+config:
+  max_retries: 3
+  default_timeout_seconds: 300
+  capture_output: true
+  shell: false
+  
+entry_point: module.py
